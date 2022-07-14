@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const mongodb = require('./db/connect');
+const friendsRoutes = require('./routes/friends');
 
 const port = process.env.PORT || 3000;
 const app = express();
@@ -15,9 +16,7 @@ app.use(bodyParser.json()).use((req, res, next) => {
   next();
 });
 
-app.use('/', (req, res) => {
-  res.send('Server is working');
-});
+app.use('/friends', friendsRoutes);
 
 mongodb.initDb((err) => {
   if (err) {
