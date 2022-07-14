@@ -2,6 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
+const mongodb = require('./db/connect');
+
 const port = process.env.PORT || 3000;
 const app = express();
 
@@ -17,9 +19,11 @@ app.use('/', (req, res) => {
   res.send('Server is working');
 });
 
-try {
-  app.listen(port);
-  console.log(`Listening on port:${port}`);
-} catch (err) {
-  console.log(err);
-}
+mongodb.initDb((err) => {
+  if (err) {
+    console.log(err);
+  } else {
+    app.listen(port);
+    console.log(`Connected to DB and listening on port:${port}`);
+  }
+});
