@@ -112,9 +112,36 @@ const updateFriend = async (req, res) => {
   }
 };
 
+const deleteFriend = async (req, res) => {
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).json('Must use a valid friend id to delete a friend.');
+    }
+
+    const friendId = new ObjectId(req.params.id);
+
+    const response = await mongodb
+      .getDb()
+      .db()
+      .collection('friends')
+      .remove({ _id: friendId }, true);
+
+    if (response.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res
+        .status(500)
+        .json(`An error occurred deleting a friend: ${response.error}`);
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getOwnFriends,
   getFriend,
   createFriend,
   updateFriend,
+  deleteFriend,
 };
