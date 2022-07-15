@@ -1,9 +1,18 @@
 const mongodb = require('../db/connect');
 const ObjectId = require('mongodb').ObjectId;
 
-const getAllFriends = async (req, res) => {
+const getOwnFriends = async (req, res) => {
   try {
-    const result = await mongodb.getDb().db().collection('friends').find();
+    const uid = req.params.uid;
+    if (!uid) {
+      res
+        .status(400)
+        .json('Must use a valid uid to look for friends documents');
+    }
+
+    const result = await mongodb.getDb().db().collection('friends').find({
+      uid: uid,
+    });
 
     result.toArray().then((lists) => {
       res.setHeader('Content-Type', 'application/json');
@@ -38,6 +47,6 @@ const getFriend = async (req, res) => {
 };
 
 module.exports = {
-  getAllFriends,
+  getOwnFriends,
   getFriend,
 };

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const friendsController = require('../controllers/friends');
 
-router.get('/', friendsController.getAllFriends);
-router.get('/:id', friendsController.getFriend);
+router.get('/:uid', friendsController.getOwnFriends);
+router.get('/:uid/:id', friendsController.getFriend);
 
 module.exports = router;
