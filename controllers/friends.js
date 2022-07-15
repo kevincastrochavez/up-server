@@ -10,9 +10,14 @@ const getOwnFriends = async (req, res) => {
         .json('Must use a valid uid to look for friends documents');
     }
 
-    const result = await mongodb.getDb().db().collection('friends').find({
-      uid: uid,
-    });
+    const result = await mongodb
+      .getDb()
+      .db()
+      .collection('friends')
+      .find({
+        uid: uid,
+      })
+      .sort({ birthdate: 1 });
 
     result.toArray().then((lists) => {
       res.setHeader('Content-Type', 'application/json');
