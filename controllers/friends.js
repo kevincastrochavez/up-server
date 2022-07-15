@@ -46,7 +46,75 @@ const getFriend = async (req, res) => {
   }
 };
 
+const createFriend = async (req, res) => {
+  try {
+    const friend = {
+      fullName: req.body.fullName,
+      birthdate: req.body.birthdate,
+      imgUrl: req.body.imgUrl,
+      favSnack: req.body.favSnack,
+      giftIdea: req.body.giftIdea,
+      dreamDay: req.body.dreamDay,
+      uid: req.body.uid,
+    };
+
+    const response = await mongodb
+      .getDb()
+      .db()
+      .collection('friends')
+      .insertOne(friend);
+
+    if (response.acknowledged) {
+      res.status(201).json(response);
+    } else {
+      res
+        .status(500)
+        .json(`An error occurred creating a friend: ${response.error}`);
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+const updateFriend = async (req, res) => {
+  try {
+    if (!ObjectId.isValid(req.params.id)) {
+      res.status(400).json('Must use a valid friend id to update a friend.');
+    }
+
+    const friendId = new ObjectId(req.params.id);
+
+    const friend = {
+      fullName: req.body.fullName,
+      birthdate: req.body.birthdate,
+      imgUrl: req.body.imgUrl,
+      favSnack: req.body.favSnack,
+      giftIdea: req.body.giftIdea,
+      dreamDay: req.body.dreamDay,
+      uid: req.body.uid,
+    };
+
+    const response = await mongodb
+      .getDb()
+      .db()
+      .collection('friends')
+      .replaceOne({ _id: friendId }, friend);
+
+    if (response.modifiedCount > 0) {
+      res.status(204).send();
+    } else {
+      res
+        .status(500)
+        .json(`An error occurred updating a friend: ${response.error}`);
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
 module.exports = {
   getOwnFriends,
   getFriend,
+  createFriend,
+  updateFriend,
 };
