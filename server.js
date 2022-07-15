@@ -16,7 +16,7 @@ app.use(bodyParser.json()).use((req, res, next) => {
   next();
 });
 
-app.use('/friends', friendsRoutes);
+app.use('/v1/friends', friendsRoutes);
 
 mongodb.initDb((err) => {
   if (err) {
